@@ -13,7 +13,7 @@ class ALUM(BaseModel):
 app = FastAPI()
 
 @app.get("/")
-def read_root():
+def read():
     return {"Hola Mundo"}
 
 @app.get("/items/{item_id}")
@@ -22,4 +22,4 @@ def read_item(item_id: int, q: Union[str, None] = None):
 
 @app.post("/alumne")
 async def add_alum(alum: ALUM):
-    return alum
+    return alum.dict()
