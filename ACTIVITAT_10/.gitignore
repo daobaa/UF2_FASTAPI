@@ -1,0 +1,9 @@
+__pychache__
+*.pyc
+*.pyo
+venv/
+env/
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
