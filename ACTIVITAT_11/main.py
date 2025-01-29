@@ -6,10 +6,6 @@ from db.text import read as tread
 from db.fails import read as fread, add, restart
 from db.abc import read as abcread
 from db.usertable import  read as utread, edit as utedit
-import logging
-
-logger = logging.getLogger("uvicorn.error")
-logger.setLevel(logging.DEBUG)
 
 
 app = FastAPI()
@@ -46,6 +42,15 @@ async def lletres(type_id: int):
 async def show_user_table(user_id: str):
     return utread(user_id)
 
-@app.post("/usertable/{user_id}/edit/{punts_actuals}{total_partides}{win_partides}{record_time}{record_punts}", response_model=List[dict])
-async def edit_user_table(user_id: str, punts_actuals: int, total_partides: int, win_partides: int, record_time: datetime, record_punts: int):
-    return utedit(user_id)
+@app.post("/usertable/{user_id}/edit", response_model=dict)
+async def edit_user_table(user_id: str, punts_actuals: int, total_partides: int, win_partides: int, record_time: str, record_punts: int):
+    try:
+        record_time = datetime.fromisoformat(record_time)
+
+        result = utedit(user_id, punts_actuals, total_partides, win_partides, record_time, record_punts)
+
+        return {"message": "User data updated successfully", "data": result}
+    except ValueError as ve:
+        raise HTTPException(status_code=400, detail=f"Invalid date format: {str(ve)}")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
