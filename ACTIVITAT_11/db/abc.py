@@ -1,14 +1,24 @@
+from fastapi import HTTPException
 from conn.conn import get_db_connection
-def read():
-    conn = None
+from schem.abc_sch import abcs_schema
+
+
+def read(type_id: int):
+    conn = get_db_connection()
+    cur = conn.cursor()
     try:
-        conn = get_db_connection()
-        cur = conn.cursor()
-        cur.execute("SELECT * FROM abc")
-        q = cur.fetchall()
+        if type_id == 2:
+            cur.execute("SELECT letter FROM abc;")
+        else:
+            cur.execute("SELECT letter FROM abc WHERE type = %s;", (type_id,))
+        rows = cur.fetchall()
+
+        result = abcs_schema(rows)
+
+        return result
+
     except Exception as e:
-        return {"status": -1, "message": f"Error de connexió:{e}" }
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
     finally:
-        if conn:
-            conn.close()
-    return q
+        cur.close()
+        conn.close()
