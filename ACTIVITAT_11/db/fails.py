@@ -1,4 +1,6 @@
 from conn.conn import get_db_connection
+
+
 def read():
     conn = None
     try:

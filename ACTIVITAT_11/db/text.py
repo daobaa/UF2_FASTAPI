@@ -1,4 +1,6 @@
 from conn.conn import get_db_connection
+
+
 def read():
     conn = None
     try:
@@ -7,7 +9,7 @@ def read():
         cur.execute("SELECT * FROM comencar")
         q = cur.fetchall()
     except Exception as e:
-        return {"status": -1, "message": f"Error de connexió:{e}" }
+        return {"status": -1, "message": f"Error de connexio:{e}"}
     finally:
         if conn:
             conn.close()
